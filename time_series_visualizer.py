@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
+import calendar
 from pandas.plotting import register_matplotlib_converters
 register_matplotlib_converters()
 
@@ -27,19 +28,27 @@ def draw_line_plot():
     fig.savefig('line_plot.png')
     return fig
 
+
 def draw_bar_plot():
     # Copy and modify data for monthly bar plot
-    df_bar = None
+    df_bar = df.copy()
+    df_bar['year'] = df.index.year.astype(str)
+    df_bar['month'] = df.index.month
+    df_bar['month'] = pd.to_datetime(df_bar['month'], format='%m').dt.strftime('%B')
+    df_bar['month'] = pd.Categorical(df_bar['month'], categories=calendar.month_name[1:], ordered=True)
 
     # Draw bar plot
-
-
-
-
+    df_bar = df_bar.groupby(['year', 'month'], sort=False, as_index=False).mean()
+    df_bar = df_bar.pivot(index='year', columns='month', values='value')
+    df_bar.plot(kind='bar', figsize=(10, 6))
+    plt.xlabel('Years', fontsize=12)
+    plt.ylabel('Average Page Views', fontsize=12)
+    fig = plt.gcf()
 
     # Save image and return fig (don't change this part)
     fig.savefig('bar_plot.png')
     return fig
+
 
 def draw_box_plot():
     # Prepare data for box plots (this part is done!)
