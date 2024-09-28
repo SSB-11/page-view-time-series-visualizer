@@ -33,8 +33,7 @@ def draw_bar_plot():
     # Copy and modify data for monthly bar plot
     df_bar = df.copy()
     df_bar['year'] = df.index.year.astype(str)
-    df_bar['month'] = df.index.month
-    df_bar['month'] = pd.to_datetime(df_bar['month'], format='%m').dt.strftime('%B')
+    df_bar['month'] = [date.strftime('%B') for date in df.index]
     df_bar['month'] = pd.Categorical(df_bar['month'], categories=calendar.month_name[1:], ordered=True)
 
     # Draw bar plot
